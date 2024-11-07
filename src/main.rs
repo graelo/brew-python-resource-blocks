@@ -1,3 +1,5 @@
+use std::env;
+
 mod pypi;
 mod spec;
 
@@ -47,7 +49,14 @@ fn generate_resource_blocks(requirements_file: &str) -> Result<String, Box<dyn s
 }
 
 fn main() {
-    match generate_resource_blocks("requirements.txt") {
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        eprintln!("Usage: {} <path to requirements.txt>", args[0]);
+        std::process::exit(1);
+    }
+
+    let requirements_file = &args[1];
+    match generate_resource_blocks(&requirements_file) {
         Ok(resources_text) => println!("{}", resources_text),
         Err(e) => eprintln!("Error: {}", e),
     }
